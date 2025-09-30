@@ -75,9 +75,15 @@ def get_bestmatch(matchedwords, lexicon):
         (str): return the word from matchedwords with the best score in the lexicon.
                If two words are tied for best score, return the one with the fewest syllables"""
     # Instructor solved this in 16 lines including the return
-    bestscore = 0
+    bestscore = -1 #changed to -1 from 0
     bestword = ""
     ### YOUR CODE HERE
+    for word in matchedwords:
+        score = lexicon[word]
+        syllcount = word.count(".") + 1
+        if score > bestscore or (score == bestscore and syllcount < bestword.count(".") + 1):
+            bestscore = score
+            bestword = word
     return bestword
 
 
@@ -90,6 +96,9 @@ def update_lexicon(lexicon, word):
        (none): lexicon is updated by reference"""
     # Instructor solved this in 4 lines including the return
     ### YOUR CODE HERE
+    if word in lexicon: #if word already in lexicon 
+        lexicon[word] += 1 #increment its score
+    else: lexicon[word] = 1 #else, add it with score of 1
     return
 
 
@@ -103,6 +112,9 @@ def subtract(beststartword, utt):
     # Instructor solved this in 3 lines including the return
     remainder = ""
     ### YOUR CODE HERE
+    #slice utt from len of beststartword to end, 
+        #then strip leading ". " and trailing whitespace
+    remainder = utt[len(beststartword):].lstrip(". ").strip()
     return remainder
 
 
@@ -115,9 +127,13 @@ def get_segpoints(lexicon, utts):
         (list of str): list of segmented utterances (. replaced with | on word boundaries)
         (list of set): list of sets of segmentation point indices"""
     # Instructor solved this in 7 lines including the return
-    allsegpoints = []
-    alljoinedutts = []
-    ### YOUR CODE HERE
+    allsegpoints = []  #list of sets of segmentation points for each utterance
+    alljoinedutts = [] #list of segmented utterances as strings
+    # For each utterance, 
+    for utt in utts:
+        joined, segpoints = get_utt_segpoints(lexicon, utt) #segment it using the lexicon
+        alljoinedutts.append(joined) #add segmented utterance to list
+        allsegpoints.append(segpoints) #add segmentation points to list
     return alljoinedutts, allsegpoints
 
 

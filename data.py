@@ -9,7 +9,7 @@ def tokenize_syllables(utterance):
 def get_boundary_indices(utterance):
     """Gets the boundary indices from gold data"""
     boundaries = "".join([c for c in utterance if c in {".","|"}])
-    return set([i.start() for i in re.finditer("\|", boundaries)])
+    return set([i.start() for i in re.finditer("\\|", boundaries)])
 
 def read_file(fname):
     """Reads a data file and returns the syllabified utterances"""
@@ -55,7 +55,11 @@ def get_precision(allgoldsegs, allpredsegs):
     FP = 0
     TP = 0
     ### YOUR CODE HERE
-    return 
+    #for-each in both lists (where zip makes an n-tuple of each elem pairing)
+    for gold, pred in zip(allgoldsegs, allpredsegs):
+        TP += len(gold & pred) #TruePos are when pred matches gold in being true
+        FP += len(pred - gold) #FalsePos are when pred is true but gold is not
+    return TP / (TP + FP) if (TP + FP) > 0 else 0 #plug into precision formula
 
 
 def get_recall(allgoldsegs, allpredsegs):
@@ -70,8 +74,12 @@ def get_recall(allgoldsegs, allpredsegs):
     # Instructor solved this in 4 lines including the return
     FN = 0
     TP = 0
-    ### YOR CODE HERE
-    return 
+    ### YOUR CODE HERE
+    #for-each in both lists (where zip makes an n-tuple of each elem pairing)
+    for gold, pred in zip(allgoldsegs, allpredsegs):
+        TP += len(gold & pred) #TruePos are when pred matches gold in being true
+        FN += len(gold - pred) #FalseNeg are when gold is true but pred is not
+    return TP / (TP + FN) if (TP + FN) > 0 else 0 #plug into recall formula
 
 
 def get_f1score(P, R):
@@ -83,7 +91,7 @@ def get_f1score(P, R):
         (float): F1 score. Returns 0 if precision and recall are both 0"""
     # Instructor solved this in 1 line including the return
     ### YOUR CODE HERE
-    return 
+    return 2 * P * R / (P + R) if (P + R) > 0 else 0 #plug and chug fscore formula
 
 
 def evaluate(allgoldsegs, allpredsegs):
@@ -97,8 +105,10 @@ def evaluate(allgoldsegs, allpredsegs):
         (float): F1-Score
     """
     # Instructor solved this in 3 lines
-    P, R, F1 = -1, -1, -1 # DELETE THIS LINE
+    P = get_precision(allgoldsegs, allpredsegs) #Call for precision
+    R = get_recall(allgoldsegs, allpredsegs) #Call for recall
+    F1 = get_f1score(P, R) #Call for fscore
     ### YOUR CODE HERE
-    return P, R, F1
+    return P, R, F1 #return all three as a tuple
 
 

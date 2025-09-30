@@ -10,6 +10,9 @@ def baseline_segs(tokenizeds):
     # Instructor solved this in 2 lines
     allsegpoints = []
     ### YOUR CODE HERE
+    #for-each utterance in tokenized, for each syllable in utterance, 
+        #add each syllable boundary to a set
+    allsegpoints = [set(range(len(utt))) for utt in tokenizeds]
     return allsegpoints
 
 

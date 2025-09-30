@@ -51,7 +51,11 @@ def get_tp_sequence(tokenized, probdict):
     bigrams = get_bigrams(tokenized)
     tpseq = []
     ### YOUR CODE HERE
-    return 
+    #for each bigram in the utterance except START and STOP bigrams
+    for prev, curr in bigrams[1:-1]:
+        tp = probdict.get(prev, {}).get(curr, 0) #get its transprob from probdict, default 0
+        tpseq.append(tp) #add to list
+    return tpseq 
 
 
 def get_local_minima(tpseq):
@@ -63,7 +67,19 @@ def get_local_minima(tpseq):
     """
     # Instructor solved this in 10 lines including the return
     ### YOUR CODE HERE
-    return
+    minima = set() #set of indices of local minima
+    #for each in tpseq except the first and last,
+    for i in range(1, len(tpseq) - 1):
+        #if value at i is < values before and after it,
+        if tpseq[i] < tpseq[i - 1] and tpseq[i] < tpseq[i + 1]:
+            minima.add(i) #add to minima set
+    #check beginning
+    if len(tpseq) >= 2 and tpseq[0] < tpseq[1]:
+        minima.add(0) #add to minima set at index 0
+    #check end
+    if len(tpseq) >= 2 and tpseq[-1] < tpseq[-2]:
+        minima.add(len(tpseq) - 1) #add to minima set at last index
+    return minima
 
 
 def get_segpoints(tokenizeds, probdict):
@@ -77,6 +93,8 @@ def get_segpoints(tokenizeds, probdict):
     # Instructor solved this in 3 lines
     allsegpoints = []
     ### YOUR CODE HERE
+    #for each utterance in tokenizeds, get its tpseq and then its local minima
+    allsegpoints = [get_local_minima(get_tp_sequence(utt, probdict)) for utt in tokenizeds]
     return allsegpoints
 
 
