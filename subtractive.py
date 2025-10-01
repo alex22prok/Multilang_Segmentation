@@ -97,7 +97,7 @@ def update_lexicon(lexicon, word):
     # Instructor solved this in 4 lines including the return
     ### YOUR CODE HERE
     if word in lexicon: #if word already in lexicon 
-        lexicon[word] += 1 #increment its score
+        lexicon[word] += 1 #reward: increment its score
     else: lexicon[word] = 1 #else, add it with score of 1
     return
 
